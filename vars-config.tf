@@ -179,6 +179,41 @@ variable "azure_config" {
   description = "If using an Azure App for authenticating your users, define those values here. *All values should be the paths to values SSM Parameter Store.*"
 }
 
+variable "deletion_protection" {
+  type    = bool
+  default = true
+}
+
+variable "database_config" {
+  type = object({
+    create_db                = optional(bool, true)
+    schema                   = optional(string, "superset")
+    engine                   = optional(string, "aurora-mysql")
+    engine_version           = optional(string, "8.0.mysql_aurora.3.02.0")
+    instance_size            = optional(string, "db.t3.medium")
+    user                     = optional(string, "superset")
+    backup_rentention_period = optional(number, 3)
+    port                     = optional(number, 3306)
+    backup_window            = optional(string, "07:00-09:00")
+    parameter_group          = optional(string, "default.aurora-mysql8.0")
+    instance_count           = optional(number, 1)
+    security_group           = optional(string, null)
+    host                     = optional(string, null)
+    secrets = optional(object({
+      password = optional(string, null)
+    }), null)
+  })
+  default = {
+    schema    = "superset"
+    create_db = true
+  }
+  description = <<-EOT
+  If `create_db` is disabled, you'll have to manage the database for Superset.
+
+  If you leave `create_db` enabled, the module will create the RDS cluster for you. The created RDS cluster will default to using serverless instances.
+  EOT
+}
+
 variable "local_admin" {
   type = object({
     username = string

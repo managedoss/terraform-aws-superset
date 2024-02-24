@@ -1,12 +1,40 @@
 locals {
   task_env = concat([
     {
-      "name" : "SUPERSET_LOG_LEVEL",
+      "name" : "LOG_LEVEL",
       "value" : var.log_level
+    },
+    {
+      "name" : "SUPERSET_DATABASE_HOST",
+      "value" : coalesce(var.database_config.host, aws_rds_cluster.superset[0].endpoint)
+    },
+    {
+      "name" : "SUPERSET_DATABASE_SCHEMA",
+      "value" : var.database_config.schema
+    },
+    {
+      "name" : "SUPERSET_DATABASE_PORT",
+      "value" : tostring(var.database_config.port)
+    },
+    {
+      "name" : "SUPERSET_DATABASE_USERNAME",
+      "value" : tostring(var.database_config.user)
+    },
+    {
+      "name" : "SUPERSET_DATABASE_ENGINE",
+      "value" : strcontains(var.database_config.engine, "mysql") ? "mysql" : "postgres"
     },
     {
       "name" : "SUPERSET_AUTH_METHOD",
       "value" : var.auth0_config.client_id == null && var.azure_config.tenant_id == null && var.okta_config.client_id == null ? "LOCAL" : "OAUTH"
+    },
+    {
+      "name" : "SUPERSET_ALLOW_USER_REGISTER",
+      "value" : tostring(var.allow_self_register)
+    },
+    {
+      "name" : "SUPERSET_USER_REGISTER_ROLE",
+      "value" : var.registration_role
     }
     ], [
     for k, v in var.feature_flags : {
@@ -85,6 +113,11 @@ locals {
         "name" : "SUPERSET_ADMIN_CONFIG_EMAIL"
       }
     ],
+    [{
+      "valueFrom" : length(data.aws_ssm_parameter.db_pass) > 0 ? var.database_config.secrets.password : "/${local.name}/db_master_pass",
+      "name" : "SUPERSET_DATABASE_PASSWORD"
+      }
+    ]
   )
 
   container_tasks = {

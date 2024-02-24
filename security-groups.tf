@@ -2,6 +2,19 @@ resource "aws_security_group" "superset_internet_to_alb" {
   name = "${local.name}-internet-to-alb"
 }
 
+resource "aws_security_group" "rds" {
+  name = "${local.name}-rds"
+}
+
+resource "aws_security_group_rule" "rds" {
+  security_group_id = aws_security_group.rds.id
+  from_port         = var.database_config.port
+  to_port           = var.database_config.port
+  type              = "ingress"
+  protocol          = "tcp"
+  self              = true
+}
+
 resource "aws_security_group_rule" "allow_http_redirect" {
   security_group_id = aws_security_group.superset_internet_to_alb.id
   from_port         = "80"

@@ -4,7 +4,7 @@ module "superset" {
   vpc_id         = "vpc-02e8793f8723abd03"
   alb_subnet_ids = ["subnet-026f47fe8065fbc83", "subnet-0a41bdca14917cdcc", "subnet-087c22f88ff4a8db1"]
   app_subnet_ids = ["subnet-026f47fe8065fbc83", "subnet-0a41bdca14917cdcc", "subnet-087c22f88ff4a8db1"]
-  db_subnet_ids  = ["subnet-0675d62325cac89b5", "subnet-06b815f5e7645895b", "subnet-043e5d4c2cbca1117"]
+  db_subnet_ids  = ["subnet-026f47fe8065fbc83", "subnet-0a41bdca14917cdcc", "subnet-087c22f88ff4a8db1"]
 
   assign_public_ip = true
 
@@ -13,8 +13,9 @@ module "superset" {
 
   acm_certificate_arn = "arn:aws:acm:us-east-1:590183739501:certificate/a975e5f0-189c-4b60-be58-1c0e68084380"
 
-  image_version = "v0.1.4"
+  image_version = "v0.1.7"
 
+  allow_self_register = true
   auth0_config = {
     client_id     = "/superset-example/auth0/client_id"
     client_secret = "/superset-example/auth0/client_secret"
@@ -22,6 +23,10 @@ module "superset" {
   }
 
   log_level = "DEBUG"
+
+  database_config = {
+    instance_count = 1
+  }
 }
 
 provider "aws" {

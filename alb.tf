@@ -1,12 +1,11 @@
 resource "aws_lb" "superset" {
-  depends_on         = [aws_ecs_task_definition.superset]
   name               = local.name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.superset_internet_to_alb.id, aws_security_group.to_container.id]
   subnets            = var.alb_subnet_ids
 
-  enable_deletion_protection = true
+  enable_deletion_protection = var.deletion_protection
 }
 
 resource "aws_lb_listener" "https" {
