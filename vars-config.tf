@@ -143,7 +143,11 @@ variable "auth0_config" {
     client_secret = string
     domain        = string
   })
-  default     = {}
+  default = {
+    client_id     = null
+    client_secret = null
+    domain        = null
+  }
   description = "If using Auth0 for authenticating your users, define those values here. *All values should be the paths to values SSM Parameter Store.*"
 }
 
@@ -153,17 +157,25 @@ variable "okta_config" {
     client_id     = string
     client_secret = string
   })
-  default     = {}
+  default = {
+    client_id     = null
+    client_secret = null
+    domain        = null
+  }
   description = "If using Okta for authenticating your users, define those values here. *All values should be the paths to values in SSM Parameter Store.*"
 }
 
-variable "azure_auth" {
+variable "azure_config" {
   type = object({
     tenant_id          = string
     application_id     = string
     application_secret = string
   })
-  default     = {}
+  default = {
+    tenant_id          = null
+    application_id     = null
+    application_secret = null
+  }
   description = "If using an Azure App for authenticating your users, define those values here. *All values should be the paths to values SSM Parameter Store.*"
 }
 
@@ -173,18 +185,11 @@ variable "local_admin" {
     password = string
     email    = optional(string, "foo@example.com")
   })
-  default     = {}
-  description = "(NOT RECOMMENDED) If using local users for authenticating your users, you must define a local admin account to initially login to. *All values should be the paths to values SSM Parameter Store.*"
-}
-
-variable "auth_method" {
-  type        = string
-  default     = "LOCAL"
-  description = "Supported authentication methods include LOCAL or OAUTH"
-  validation {
-    condition     = contains(["OAUTH", "LOCAL"], var.auth_method)
-    error_message = "Valid values are OAUTH and LOCAL"
+  default = {
+    username = null
+    password = null
   }
+  description = "(NOT RECOMMENDED) If using local users for authenticating your users, you must define a local admin account to initially login to. *All values should be the paths to values SSM Parameter Store.*"
 }
 
 variable "registration_role" {
