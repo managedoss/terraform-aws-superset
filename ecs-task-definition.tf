@@ -1,10 +1,21 @@
 locals {
-  task_env = [
+  task_env = concat([
     {
       "name" : "LOG_LEVEL",
       "value" : var.log_level
     }
-  ]
+    ], [
+    for k, v in var.feature_flags : {
+      "name" : "FEATURE_FLAG_${k}",
+      "value" : "True"
+    } if v == true
+    ],
+    [
+      for k, v in var.beta_feature_flags : {
+        "name" : "BETA_FEATURE_FLAG_${k}",
+        "value" : "True"
+      } if v == true
+  ])
 
   task_secrets = [for k, v in local.secrets :
     {

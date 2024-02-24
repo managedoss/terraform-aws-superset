@@ -81,17 +81,6 @@ locals {
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
-variable "admin_config" {
-  type = object({
-    username = string
-    password = optional(string, null)
-    email    = optional(string, "foo@example.com")
-  })
-  default = {
-    username = null
-  }
-}
-
 variable "log_level" {
   default     = "ERROR"
   description = "Python logging level"
@@ -99,4 +88,113 @@ variable "log_level" {
     condition     = contains(["INFO", "DEBUG", "ERROR", "WARN", "CRITICAL"], var.log_level)
     error_message = "log_level should be one of ${join(", ", ["INFO", "DEBUG", "ERROR", "WARN", "CRITICAL"])}"
   }
+}
+
+variable "feature_flags" {
+  type = object({
+    ALERTS_ATTACH_REPORTS            = optional(bool, false)
+    ALLOW_ADHOC_SUBQUERY             = optional(bool, false)
+    DASHBOARD_CROSS_FILTERS          = optional(bool, false)
+    DASHBOARD_RBAC                   = optional(bool, false)
+    DATAPANEL_CLOSED_BY_DEFAULT      = optional(bool, false)
+    DISABLE_LEGACY_DATASOURCE_EDITOR = optional(bool, false)
+    DRUID_JOINS                      = optional(bool, false)
+    EMBEDDABLE_CHARTS                = optional(bool, false)
+    EMBEDDED_SUPERSET                = optional(bool, false)
+    ENABLE_TEMPLATE_PROCESSING       = optional(bool, false)
+    ESCAPE_MARKDOWN_HTML             = optional(bool, false)
+    LISTVIEWS_DEFAULT_CARD_VIEW      = optional(bool, false)
+    SCHEDULED_QUERIES                = optional(bool, false)
+    SQLLAB_BACKEND_PERSISTENCE       = optional(bool, false)
+    SQL_VALIDATORS_BY_ENGINE         = optional(bool, false)
+    THUMBNAILS                       = optional(bool, false)
+    ALERT_REPORTS                    = optional(bool, false)
+    ALLOW_FULL_CSV_EXPORT            = optional(bool, false)
+  })
+  default = {}
+}
+
+variable "beta_feature_flags" {
+  type = object({
+    ALERT_REPORTS                     = optional(bool, false)
+    ALLOW_FULL_CSV_EXPORT             = optional(bool, false)
+    CACHE_IMPERSONATION               = optional(bool, false)
+    CONFIRM_DASHBOARD_DIFF            = optional(bool, false)
+    DASHBOARD_VIRTUALIZATION          = optional(bool, false)
+    DRILL_BY                          = optional(bool, false)
+    DRILL_TO_DETAIL                   = optional(bool, false)
+    DYNAMIC_PLUGINS                   = optional(bool, false)
+    ENABLE_JAVASCRIPT_CONTROLS        = optional(bool, false)
+    ESTIMATE_QUERY_COST               = optional(bool, false)
+    GENERIC_CHART_AXES                = optional(bool, false)
+    GLOBAL_ASYNC_QUERIE               = optional(bool, false)
+    HORIZONTAL_FILTER_BAR             = optional(bool, false)
+    PLAYWRIGHT_REPORTS_AND_THUMBNAILS = optional(bool, false)
+    RLS_IN_SQLLAB                     = optional(bool, false)
+    SSH_TUNNELING                     = optional(bool, false)
+    USE_ANALAGOUS_COLORS              = optional(bool, false)
+  })
+  default = {}
+}
+
+variable "auth0_config" {
+  type = object({
+    client_id     = string
+    client_secret = string
+    domain        = string
+  })
+  default     = {}
+  description = "If using Auth0 for authenticating your users, define those values here. *All values should be the paths to values SSM Parameter Store.*"
+}
+
+variable "okta_config" {
+  type = object({
+    domain        = string
+    client_id     = string
+    client_secret = string
+  })
+  default     = {}
+  description = "If using Okta for authenticating your users, define those values here. *All values should be the paths to values in SSM Parameter Store.*"
+}
+
+variable "azure_auth" {
+  type = object({
+    tenant_id          = string
+    application_id     = string
+    application_secret = string
+  })
+  default     = {}
+  description = "If using an Azure App for authenticating your users, define those values here. *All values should be the paths to values SSM Parameter Store.*"
+}
+
+variable "local_admin" {
+  type = object({
+    username = string
+    password = string
+    email    = optional(string, "foo@example.com")
+  })
+  default     = {}
+  description = "(NOT RECOMMENDED) If using local users for authenticating your users, you must define a local admin account to initially login to. *All values should be the paths to values SSM Parameter Store.*"
+}
+
+variable "auth_method" {
+  type        = string
+  default     = "LOCAL"
+  description = "Supported authentication methods include LOCAL or OAUTH"
+  validation {
+    condition     = contains(["OAUTH", "LOCAL"], var.auth_method)
+    error_message = "Valid values are OAUTH and LOCAL"
+  }
+}
+
+variable "registration_role" {
+  type        = string
+  default     = "Admin"
+  description = "Defines how automatically provisioned (via OAUTH) users are assigned by default to roles."
+}
+
+variable "allow_self_register" {
+  type        = bool
+  default     = false
+  description = "Allows users to register themselves."
 }
