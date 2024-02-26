@@ -1,9 +1,4 @@
-# managedoss/terraform-aws-superset
-
-Run your Superset instance with ease, without a ton of engineering overhead.
-
-For support requests, please visit [managedoss.com](https://managedoss.com)
-
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -94,5 +89,4 @@ No modules.
 ## Outputs
 
 No outputs.
-
-## Available Containers
+<!-- END_TF_DOCS -->
