@@ -13,7 +13,7 @@ module "superset" {
 
   acm_certificate_arn = "arn:aws:acm:us-east-1:590183739501:certificate/a975e5f0-189c-4b60-be58-1c0e68084380"
 
-  image_version = "v0.1.7"
+  image_version = "v0"
 
   allow_self_register = true
   auth0_config = {
