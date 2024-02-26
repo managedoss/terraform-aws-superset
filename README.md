@@ -96,15 +96,15 @@ No modules.
 
 No outputs.
 
-## Available Containers
+## Available Container Image Versions
 
+- v0.1.28
 - v0.1.27
 - v0.1.26
 - v0.1.25
 - v0.1.24
 - v0.1.23
 - v0.1.22
--
 -
 -
 -
