@@ -3,13 +3,14 @@ resource "null_resource" "service_dependency" {
     db_host = var.database_config.host != null ? var.database_config.host : aws_rds_cluster_instance.superset[0].endpoint
   }
 }
+
 resource "aws_ecs_service" "superset" {
   name       = local.name
   depends_on = [null_resource.service_dependency]
 
   cluster = aws_ecs_cluster.superset.name
 
-  health_check_grace_period_seconds = 360
+  health_check_grace_period_seconds = 600
   launch_type                       = "FARGATE"
   task_definition                   = aws_ecs_task_definition.superset.arn
   desired_count                     = 1

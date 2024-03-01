@@ -44,8 +44,7 @@ variable "allow_traffic_from" {
 }
 
 variable "image_version" {
-  type    = string
-  default = "latest"
+  type = string
 }
 
 variable "assign_public_ip" {
@@ -69,13 +68,14 @@ variable "route53_domain" {
   description = "Domain to assign to your load balancer and to create records for in Route53."
 }
 
-resource "random_id" "id" {
-  byte_length = 5
+resource "random_string" "id" {
+  length  = 5
+  special = false
+  lower   = true
 }
 
 locals {
-  random_id = random_id.id.id
-  name      = var.name == "" ? "superset-${local.random_id}" : var.name
+  name = var.name == "" ? "superset-${random_string.id.result}" : var.name
 }
 
 data "aws_region" "current" {}
@@ -199,6 +199,7 @@ variable "database_config" {
     instance_count           = optional(number, 1)
     security_group           = optional(string, null)
     host                     = optional(string, null)
+    skip_final_snapshot      = optional(bool, false)
     secrets = optional(object({
       password = optional(string, null)
     }), null)

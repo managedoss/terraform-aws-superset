@@ -1,6 +1,14 @@
 locals {
   task_env = concat([
     {
+      "name" : "SUPERSET_S3_CACHE_BUCKET",
+      "value" : aws_s3_bucket.cache.bucket
+    },
+    {
+      "name" : "SUPERSET_SQS_QUEUE_URL",
+      "value" : aws_sqs_queue.queries.url
+    },
+    {
       "name" : "LOG_LEVEL",
       "value" : var.log_level
     },
@@ -149,6 +157,18 @@ data "aws_iam_policy_document" "superset_task_policy" {
   }
 
   statement {
+    actions   = ["s3:Get*", "s3:Put*", "s3:Delete*", "s3:List*"]
+    resources = [aws_s3_bucket.cache.arn, "${aws_s3_bucket.cache.arn}/*"]
+    effect    = "Allow"
+  }
+
+  statement {
+    actions   = ["sqs:Send*", "sqs:Receive*", "sqs:getqueueattributes", "sqs:DeleteMessageBatch"]
+    resources = [aws_sqs_queue.queries.arn]
+    effect    = "Allow"
+  }
+
+  statement {
     actions   = ["ssm:GetParameters"]
     resources = [for k, v in toset(local.task_secrets) : "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${v.valueFrom}"]
     effect    = "Allow"
@@ -182,6 +202,8 @@ resource "aws_ecs_task_definition" "superset" {
   cpu                      = 2048
   memory                   = 4096
 
+  task_role_arn = aws_iam_role.superset_task.arn
+  # TODO: create a separate iam role to pull ssm values
   execution_role_arn = aws_iam_role.superset_task.arn
 
   container_definitions = jsonencode([

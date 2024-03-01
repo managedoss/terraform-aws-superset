@@ -13,7 +13,7 @@ module "superset" {
 
   acm_certificate_arn = "arn:aws:acm:us-east-1:590183739501:certificate/a975e5f0-189c-4b60-be58-1c0e68084380"
 
-  image_version = "v0"
+  image_version = "v0.1.37-rc10"
 
   allow_self_register = true
   auth0_config = {
@@ -22,10 +22,14 @@ module "superset" {
     domain        = "/superset-example/auth0/domain"
   }
 
-  log_level = "DEBUG"
+  log_level = "ERROR"
+
+  # disable deletion protection for example
+  deletion_protection = false
 
   database_config = {
-    instance_count = 1
+    instance_count      = 1
+    skip_final_snapshot = true
   }
 }
 

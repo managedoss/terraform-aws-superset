@@ -6,18 +6,20 @@ data "aws_subnet" "selected" {
 resource "aws_rds_cluster" "superset" {
   count = var.database_config.create_db == true ? 1 : 0
 
-  cluster_identifier      = lower(local.name)
-  engine                  = var.database_config.engine
-  engine_version          = var.database_config.engine_version
-  availability_zones      = [for subnet in data.aws_subnet.selected : subnet.availability_zone]
-  database_name           = var.database_config.schema
-  master_username         = var.database_config.user
-  master_password         = length(data.aws_ssm_parameter.db_pass) > 0 ? data.aws_ssm_parameter.db_pass[0].value : random_password.db_pass[0].result
-  port                    = var.database_config.port
-  backup_retention_period = var.database_config.backup_rentention_period
-  preferred_backup_window = var.database_config.backup_window
-  deletion_protection     = var.deletion_protection
-  vpc_security_group_ids  = [aws_security_group.rds.id]
+  cluster_identifier        = lower(local.name)
+  engine                    = var.database_config.engine
+  engine_version            = var.database_config.engine_version
+  availability_zones        = [for subnet in data.aws_subnet.selected : subnet.availability_zone]
+  database_name             = var.database_config.schema
+  master_username           = var.database_config.user
+  master_password           = length(data.aws_ssm_parameter.db_pass) > 0 ? data.aws_ssm_parameter.db_pass[0].value : random_password.db_pass[0].result
+  port                      = var.database_config.port
+  backup_retention_period   = var.database_config.backup_rentention_period
+  preferred_backup_window   = var.database_config.backup_window
+  deletion_protection       = var.deletion_protection
+  vpc_security_group_ids    = [aws_security_group.rds.id]
+  skip_final_snapshot       = var.database_config.skip_final_snapshot
+  final_snapshot_identifier = var.database_config.skip_final_snapshot ? null : local.name
 
   dynamic "serverlessv2_scaling_configuration" {
     for_each = var.database_config.instance_size == "db.serverless" ? [1] : []
