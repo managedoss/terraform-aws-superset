@@ -44,7 +44,8 @@ variable "allow_traffic_from" {
 }
 
 variable "image_version" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "assign_public_ip" {

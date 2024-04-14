@@ -1,4 +1,5 @@
 locals {
+  image_version = var.image_version == null ? file("${path.module}/.latestVersion") : var.image_version
   task_env = concat([
     {
       "name" : "SUPERSET_S3_CACHE_BUCKET",
@@ -209,7 +210,7 @@ resource "aws_ecs_task_definition" "superset" {
   container_definitions = jsonencode([
     for task_name, task in local.container_tasks : {
       name         = task_name
-      image        = "709825985650.dkr.ecr.us-east-1.amazonaws.com/managed-oss/superset:${var.image_version}"
+      image        = "709825985650.dkr.ecr.us-east-1.amazonaws.com/managed-oss/superset:${local.image_version}"
       cpu          = 512
       memory       = 1024
       essential    = true
