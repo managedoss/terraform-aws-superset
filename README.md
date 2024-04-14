@@ -88,7 +88,7 @@ No modules.
 | <a name="input_db_subnet_ids"></a> [db\_subnet\_ids](#input\_db\_subnet\_ids) | What subnets should the database be configured to run in? In some network topologies, databases are segmented in a separate, private network. These subnets should be within the same network as the VPC ID that you define. | `list(string)` | n/a | yes |
 | <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | n/a | `bool` | `true` | no |
 | <a name="input_feature_flags"></a> [feature\_flags](#input\_feature\_flags) | n/a | <pre>object({<br>    ALERTS_ATTACH_REPORTS            = optional(bool, false)<br>    ALLOW_ADHOC_SUBQUERY             = optional(bool, false)<br>    DASHBOARD_CROSS_FILTERS          = optional(bool, false)<br>    DASHBOARD_RBAC                   = optional(bool, false)<br>    DATAPANEL_CLOSED_BY_DEFAULT      = optional(bool, false)<br>    DISABLE_LEGACY_DATASOURCE_EDITOR = optional(bool, false)<br>    DRUID_JOINS                      = optional(bool, false)<br>    EMBEDDABLE_CHARTS                = optional(bool, false)<br>    EMBEDDED_SUPERSET                = optional(bool, false)<br>    ENABLE_TEMPLATE_PROCESSING       = optional(bool, false)<br>    ESCAPE_MARKDOWN_HTML             = optional(bool, false)<br>    LISTVIEWS_DEFAULT_CARD_VIEW      = optional(bool, false)<br>    SCHEDULED_QUERIES                = optional(bool, false)<br>    SQLLAB_BACKEND_PERSISTENCE       = optional(bool, false)<br>    SQL_VALIDATORS_BY_ENGINE         = optional(bool, false)<br>    THUMBNAILS                       = optional(bool, false)<br>    ALERT_REPORTS                    = optional(bool, false)<br>    ALLOW_FULL_CSV_EXPORT            = optional(bool, false)<br>  })</pre> | `{}` | no |
-| <a name="input_image_version"></a> [image\_version](#input\_image\_version) | n/a | `string` | n/a | yes |
+| <a name="input_image_version"></a> [image\_version](#input\_image\_version) | n/a | `string` | `null` | no |
 | <a name="input_local_admin"></a> [local\_admin](#input\_local\_admin) | (NOT RECOMMENDED) If using local users for authenticating your users, you must define a local admin account to initially login to. *All values should be the paths to values SSM Parameter Store.* | <pre>object({<br>    username = string<br>    password = string<br>    email    = optional(string, "foo@example.com")<br>  })</pre> | <pre>{<br>  "password": null,<br>  "username": null<br>}</pre> | no |
 | <a name="input_log_level"></a> [log\_level](#input\_log\_level) | Python logging level | `string` | `"ERROR"` | no |
 | <a name="input_name"></a> [name](#input\_name) | If you would like to customize the naming convention of your Superset instance | `string` | `""` | no |
@@ -112,6 +112,8 @@ No outputs.
 </tr>
 </thead>
 <tbody>
+  <tr><td>v1.0.1</td><td>2024-04-14T19:20:38Z</td></tr>
   <tr><td>v1.0.0</td><td>2024-04-14T16:07:41Z</td></tr>
 </tbody>
 </table>
+<!-- END_TF_DOCS -->
